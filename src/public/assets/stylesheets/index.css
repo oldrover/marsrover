@@ -9,6 +9,10 @@ body {
 
 header {
   /* header styles */
+  background-image: url("../images/curiosity.jpg");
+  background-repeat: no-repeat;
+  height: 200px;
+
 }
 
 main {
