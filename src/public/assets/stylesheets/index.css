@@ -5,23 +5,38 @@ body {
   flex-direction: column;
   font-family: Arial;
   min-height: 100vh;
+  background-image: url("../images/curiosity.jpg");
 }
 
 header {
   /* header styles */
-  background-image: url("../images/curiosity.jpg");
-  background-repeat: no-repeat;
-  height: 200px;
+  height: 100px;
+  
+  
 
 }
 
 main {
-  flex: 1;
-  padding: 20px;
+  flex: 1;  
+  padding: 20px; 
+    
+}
+main section {
+  padding: 15px;
+  background-color: white;
+  border-radius: 10px;
+  opacity: 0.6;
+
+}
+main p{
+  font-weight: bold;
+  color: #000000;
+  
 }
 
 footer {
-  /* footer styles */
+  height: 100px;
+    /* footer styles */
 }
 
 /* -------------------  TABLET  --------------------- */
