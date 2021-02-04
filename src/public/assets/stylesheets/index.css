@@ -30,14 +30,13 @@ header element {
 
 main {
   flex: 1;  
-  padding: 20px; 
+  padding: 20px;  
     
 }
 section {
   padding: 25px;  
   background:rgba(0,0,0,0.5);
-  color: #ffffff;
-  
+  color: #ffffff;  
 }
 
 main p{
