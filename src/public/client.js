@@ -2,6 +2,7 @@ let store = {
     user: { name: "Student" },
     apod: '',
     rovers: ['Curiosity', 'Opportunity', 'Spirit'],
+    selected: ''
 }
 
 // add our markup to the page
@@ -13,7 +14,8 @@ const updateStore = (store, newState) => {
 }
 
 const render = async (root, state) => {
-    root.innerHTML = App(state)
+    root.innerHTML = App(state);
+    addClickListener(state);
 }
 
 
@@ -24,8 +26,7 @@ const App = (state) => {
     return `
         <header>${createHeader(rovers)}</header>
         <main>
-            <section>
-                
+            <section>                
                 ${ImageOfTheDay(apod)}
             </section>
         </main>
@@ -35,7 +36,7 @@ const App = (state) => {
 
 // listening for load event because page should load before any JS is called
 window.addEventListener('load', () => {
-    render(root, store)
+    render(root, store);   
 })
 
 // ------------------------------------------------------  COMPONENTS
@@ -69,12 +70,14 @@ const ImageOfTheDay = (apod) => {
     // check if the photo of the day is actually type video!
     if (apod.image.media_type === "video") {
         return (`
+            <h3>Astronomic Video of the day</h3>
             <p>See today's featured video <a href="${apod.url}">here</a></p>
             <p>${apod.image.title}</p>
             <p>${apod.image.explanation}</p>
         `)
     } else {
         return (`
+            <h3>Astronomic Picture of the day</h3>
             <img src="${apod.image.url}" height="350px" width="100%" />
             <p>${apod.image.explanation}</p>
         `)
@@ -91,13 +94,14 @@ const getImageOfTheDay = (state) => {
         .then(res => res.json())
         .then(apod => updateStore(store, { apod }));
 
-    //return data;
 }
+
+
 
 const createHeader = (rovers) => {
     let menu = '<div>';
     rovers.forEach(element => {
-        menu += `<element>${element}</element>`;
+        menu += `<element id='${element}'>${element}</element>`;
 
     });
 
@@ -107,4 +111,19 @@ const createHeader = (rovers) => {
 const createFooter = () => {
     return "<div>this is the Footer</div>";
 
-}
+};
+
+const addClickListener =(state) => {
+    let rovers = state.rovers;
+
+    rovers.forEach(element => {
+        document.getElementById(element).addEventListener('click', () => {
+            updateStore(store, { selected: element })
+        });
+
+    });
+
+};
+
+
+
