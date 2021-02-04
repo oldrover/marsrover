@@ -22,7 +22,7 @@ const App = (state) => {
     let { rovers, apod } = state;
 
     return `
-        <header>${createHeader()}</header>
+        <header>${createHeader(rovers)}</header>
         <main>
             ${Greeting(store.user.name)}
             <section>
@@ -104,8 +104,14 @@ const getImageOfTheDay = (state) => {
     //return data;
 }
 
-const createHeader = () => {
-    return "This is the Header";
+const createHeader = (rovers) => {
+    let menu = '<div>';
+    rovers.forEach(element => {
+        menu += ` ${element}`;
+
+    });
+
+    return menu + '</div>';
 }
 
 const createFooter = () => {
