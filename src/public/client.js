@@ -32,7 +32,7 @@ const App = (state) => {
             <submenu>${createSubMenu(selected)}</submenu>
             <section> 
             ${showImagesByRover(state)}   
-            </section
+            </section>
         </main>
         <footer>${createFooter()}</footer>
     `
