@@ -9,11 +9,14 @@ body {
 }
 
 header {
-  /* header styles */
-  height: 100px;
+  /* header styles */  
+  height: 20px;
   
-  
+}
 
+header div {
+  position:absolute;
+  right: 75px;
 }
 
 main {
@@ -22,20 +25,19 @@ main {
     
 }
 main section {
-  padding: 15px;
-  background-color: white;
-  border-radius: 10px;
-  opacity: 0.6;
-
-}
-main p{
-  font-weight: bold;
-  color: #000000;
+  padding: 15px;  
+  background:rgba(0,0,0,0.5);
   
 }
 
+main p{
+  font-weight: bold;
+  color: #ffffff;
+}
+  
+
 footer {
-  height: 100px;
+  
     /* footer styles */
 }
 
