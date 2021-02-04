@@ -1,18 +1,29 @@
-require('dotenv').config()
+require('dotenv').config();
 const express = require('express')
-const bodyParser = require('body-parser')
-const fetch = require('node-fetch')
-const path = require('path')
+const bodyParser = require('body-parser');
+const fetch = require('node-fetch');
+const path = require('path');
 
-const app = express()
-const port = 3000
+const app = express();
+const port = 3000;
 
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
-app.use('/', express.static(path.join(__dirname, '../public')))
+app.use('/', express.static(path.join(__dirname, '../public')));
 
 // your API calls
+app.get('/curiosity/images', async (req, res) => {
+    try {
+        let date = "2015-6-3";
+        let images = await fetch(`https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?earth_date=${date}&api_key=${process.env.API_KEY}`)
+            .then(res => res.json())
+        res.send({ images })
+    } catch (err) {
+        console.log('error:', err);
+    }
+});
+
 
 // example API call
 app.get('/apod', async (req, res) => {
@@ -23,6 +34,6 @@ app.get('/apod', async (req, res) => {
     } catch (err) {
         console.log('error:', err);
     }
-})
+});
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+app.listen(port, () => console.log(`Example app listening on port ${port}!`));
