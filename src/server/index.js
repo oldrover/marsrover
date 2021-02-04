@@ -15,7 +15,8 @@ app.use('/', express.static(path.join(__dirname, '../public')));
 // your API calls
 app.get('/curiosity/images', async (req, res) => {
     try {
-        let date = "2015-6-3";
+        let today = new Date();
+        let date = `${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()-1}`;
         let images = await fetch(`https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?earth_date=${date}&api_key=${process.env.API_KEY}`)
             .then(res => res.json())
         res.send({ images })
