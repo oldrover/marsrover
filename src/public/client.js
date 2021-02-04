@@ -107,7 +107,7 @@ const getImageOfTheDay = (state) => {
 const createHeader = (rovers) => {
     let menu = '<div>';
     rovers.forEach(element => {
-        menu += ` ${element}`;
+        menu += `<element>${element}</element>`;
 
     });
 
