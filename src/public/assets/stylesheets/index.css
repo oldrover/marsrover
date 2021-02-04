@@ -8,15 +8,21 @@ body {
   background-image: url("../images/curiosity.jpg");
 }
 
-header {
-  /* header styles */  
-  height: 20px;
-  
+header {  
+  padding: 20px; 
+  height: 20px;  
+  /*background:rgba(0,0,0,0.5);*/
 }
 
 header div {
-  position:absolute;
-  right: 75px;
+  position: absolute;  
+  right: 100px;  
+}
+
+header element {
+  padding: 20px;
+  font-weight: bold;
+  color: white;  
 }
 
 main {
