@@ -15,9 +15,7 @@ app.use('/', express.static(path.join(__dirname, '../public')));
 // your API calls
 app.get('/curiosity/images', async (req, res) => {
     try {
-        let today = new Date();
-        let date = `${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()-1}`;
-        let images = await fetch(`https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?earth_date=${date}&api_key=${process.env.API_KEY}`)
+        let images = await fetch(`https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/latest_photos?api_key=${process.env.API_KEY}`)
             .then(res => res.json())
         res.send({ images })
     } catch (err) {
@@ -27,9 +25,7 @@ app.get('/curiosity/images', async (req, res) => {
 
 app.get('/opportunity/images', async (req, res) => {
     try {
-        let today = new Date();
-        let date = `${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()-1}`;
-        let images = await fetch(`https://api.nasa.gov/mars-photos/api/v1/rovers/opportunity/photos?earth_date=${date}&api_key=${process.env.API_KEY}`)
+        let images = await fetch(`https://api.nasa.gov/mars-photos/api/v1/rovers/opportunity/latest_photos?api_key=${process.env.API_KEY}`)
             .then(res => res.json())
         res.send({ images })
     } catch (err) {
@@ -39,9 +35,7 @@ app.get('/opportunity/images', async (req, res) => {
 
 app.get('/spirit/images', async (req, res) => {
     try {
-        let today = new Date();
-        let date = `${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()-1}`;
-        let images = await fetch(`https://api.nasa.gov/mars-photos/api/v1/rovers/spirit/photos?earth_date=${date}&api_key=${process.env.API_KEY}`)
+        let images = await fetch(`https://api.nasa.gov/mars-photos/api/v1/rovers/spirit/latest_photos?api_key=${process.env.API_KEY}`)
             .then(res => res.json())
         res.send({ images })
     } catch (err) {
