@@ -2,7 +2,8 @@ let store = {
     user: { name: "Student" },
     apod: '',
     rovers: ['Curiosity', 'Opportunity', 'Spirit'],
-    selected: ''
+    selected: '',
+    images: ''
 }
 
 // add our markup to the page
@@ -21,17 +22,38 @@ const render = async (root, state) => {
 
 // create content
 const App = (state) => {
-    let { rovers, apod } = state;
+    let { rovers, apod, selected, images } = state;
 
-    return `
+    if(selected !="") {  
+
+        return `
         <header>${createHeader(rovers)}</header>
         <main>
-            <section>                
-                ${ImageOfTheDay(apod)}
+            <p>${selected}</p>
+            <section> 
+            ${getImagesByRover({selected, images})}   
             </section>
         </main>
         <footer>${createFooter()}</footer>
     `
+    }else{
+
+        return `
+        <header>${createHeader(rovers)}</header>
+        <main>
+            <p>${selected}</p>
+            <section>                
+                ${ImageOfTheDay(apod)}
+                
+            </section>
+        </main>
+        <footer>${createFooter()}</footer>
+    `
+        
+    }
+
+    
+    
 }
 
 // listening for load event because page should load before any JS is called
@@ -40,19 +62,6 @@ window.addEventListener('load', () => {
 })
 
 // ------------------------------------------------------  COMPONENTS
-
-// Pure function that renders conditional information -- THIS IS JUST AN EXAMPLE, you can delete it.
-const Greeting = (name) => {
-    if (name) {
-        return `
-            <h1>Welcome, ${name}!</h1>
-        `
-    }
-
-    return `
-        <h1>Hello!</h1>
-    `
-}
 
 // Example of a pure function that renders infomation requested from the backend
 const ImageOfTheDay = (apod) => {
@@ -94,8 +103,21 @@ const getImageOfTheDay = (state) => {
         .then(res => res.json())
         .then(apod => updateStore(store, { apod }));
 
-}
+};
 
+const getImagesByRover = (state) => {
+    let selectedRover = state.selected.toLowerCase();
+    let { images } = state.images;
+    
+    fetch(`http://localhost:3000/${selectedRover}/images`)
+        .then(res => res.json())
+        .then(images => updateStore(store, { images }));
+
+};
+
+const showImagesByRover = (state) => {
+    
+}
 
 
 const createHeader = (rovers) => {
@@ -106,7 +128,7 @@ const createHeader = (rovers) => {
     });
 
     return menu + '</div>';
-}
+};
 
 const createFooter = () => {
     return "<div>this is the Footer</div>";
