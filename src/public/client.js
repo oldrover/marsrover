@@ -31,8 +31,8 @@ const App = (state) => {
         <main>
             <p>${selected}</p>
             <section> 
-            ${getImagesByRover({selected, images})}   
-            </section>
+            ${showImagesByRover(state)}   
+            </section
         </main>
         <footer>${createFooter()}</footer>
     `
@@ -48,8 +48,7 @@ const App = (state) => {
             </section>
         </main>
         <footer>${createFooter()}</footer>
-    `
-        
+    `   
     }
 
     
@@ -105,6 +104,7 @@ const getImageOfTheDay = (state) => {
 
 };
 
+// get Images by selected Rover
 const getImagesByRover = (state) => {
     let selectedRover = state.selected.toLowerCase();
     let { images } = state.images;
@@ -115,11 +115,26 @@ const getImagesByRover = (state) => {
 
 };
 
+// show images of selected Rover
 const showImagesByRover = (state) => {
-    
-}
+
+    if(!state.images){
+        getImagesByRover(state);
+
+    }else{
+        if(state.images.images.error){
+            return state.images.images.error.code;
+        }
+        else{
+            //show images
+
+        }        
+    }
 
 
+};
+
+// create Header content
 const createHeader = (rovers) => {
     let menu = '<div>';
     rovers.forEach(element => {
@@ -130,11 +145,13 @@ const createHeader = (rovers) => {
     return menu + '</div>';
 };
 
+// create Footer content
 const createFooter = () => {
     return "<div>this is the Footer</div>";
 
 };
 
+// add ClickListener to menu items
 const addClickListener =(state) => {
     let rovers = state.rovers;
 
