@@ -3,15 +3,15 @@ let store = {
     apod: '',
     rovers: ['Curiosity', 'Opportunity', 'Spirit'],
     selected: '',
-    images: ''
-}
+    images: ''    
+};
 
 // add our markup to the page
-const root = document.getElementById('root')
+const root = document.getElementById('root');
 
 const updateStore = (store, newState) => {
-    store = Object.assign(store, newState)
-    render(root, store)
+    store = Object.assign(store, newState);
+    render(root, store);
 }
 
 const render = async (root, state) => {
@@ -29,7 +29,7 @@ const App = (state) => {
         return `
         <header>${createHeader(rovers)}</header>
         <main>
-            <p>${selected}</p>
+            <submenu>${createSubMenu(selected)}</submenu>
             <section> 
             ${showImagesByRover(state)}   
             </section
@@ -41,7 +41,6 @@ const App = (state) => {
         return `
         <header>${createHeader(rovers)}</header>
         <main>
-            <p>${selected}</p>
             <section>                
                 ${ImageOfTheDay(apod)}
                 
@@ -107,7 +106,7 @@ const getImageOfTheDay = (state) => {
 // get Images by selected Rover
 const getImagesByRover = (state) => {
     let selectedRover = state.selected.toLowerCase();
-    let { images } = state.images;
+    let { images } = state.images;    
     
     fetch(`http://localhost:3000/${selectedRover}/images`)
         .then(res => res.json())
@@ -127,6 +126,25 @@ const showImagesByRover = (state) => {
         }
         else{
             //show images
+            let src = state.images.images.latest_photos;
+            const photoArray = src.map(item => item).slice(0, 8);
+            
+            let retString = '';
+            photoArray.forEach(photo => {
+                retString += `<img src=${photo.img_src} style='width:400px; margin:10px;'></img>`;
+                //add date to pics
+
+            });
+            
+            let information = 
+                `
+                <div> Rover: ${photoArray[0].rover.name}</div>
+                <div> Landing date: ${photoArray[0].rover.landing_date}</div>
+                <div> Launch date: ${photoArray[0].rover.launch_date}</div>
+                <div> Status: ${photoArray[0].rover.status}</div>
+                `
+            return retString + information;
+            
 
         }        
     }
@@ -157,12 +175,17 @@ const addClickListener =(state) => {
 
     rovers.forEach(element => {
         document.getElementById(element).addEventListener('click', () => {
-            updateStore(store, { selected: element })
+            updateStore(store, { selected: element, images: '' })
         });
 
     });
 
 };
+const createSubMenu = (state) => {
+        
+    return state;
+
+}
 
 
 
