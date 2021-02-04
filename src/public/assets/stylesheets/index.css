@@ -11,18 +11,18 @@ body {
 }
 
 header {  
-  padding: 20px; 
+  padding-top: 20px;
   height: 20px;  
   /*background:rgba(0,0,0,0.5);*/
 }
 
 header div {
   position: absolute;  
-  right: 100px;  
+  right: 75px;  
 }
 
 header element {
-  padding: 20px;
+  padding-left: 20px;
   font-weight: bold;
   color: white;  
 }
