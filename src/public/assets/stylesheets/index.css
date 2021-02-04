@@ -32,9 +32,10 @@ main {
   padding: 20px; 
     
 }
-main section {
-  padding: 15px;  
+section {
+  padding: 25px;  
   background:rgba(0,0,0,0.5);
+  color: #ffffff;
   
 }
 
