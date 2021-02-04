@@ -24,7 +24,8 @@ header div {
 header element {
   padding-left: 20px;
   font-weight: bold;
-  color: white;  
+  color: white; 
+  cursor: pointer; 
 }
 
 main {
