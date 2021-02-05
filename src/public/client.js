@@ -2,12 +2,9 @@ const store = Immutable.Map({
     apod: '',
     rovers: ['Curiosity', 'Opportunity', 'Spirit'],
     selected: '',
-    images: ''    
+    images: '',
+    rover: ''   
 });
-
-//testvar
-let test = {};
-
 
 // add our markup to the page
 const root = document.getElementById('root');
@@ -16,27 +13,30 @@ const root = document.getElementById('root');
 //update store
 const updateStore = (store, newState) => {
     store = store.merge(newState);
-    console.log(store.toJS());
+    //console.log(store.toJS());
     render(root, store);
 };
 
 
 //render the page
 const render = async (root, state) => {   
-    root.innerHTML = App(state);
-    console.log(state.get('selected'));
-    addClickListener(state); 
+    root.innerHTML = App(state); 
+    showRoverInformation(state.get('rover'));   
+    addClickListener(); 
+
 };
 
 
 // create content
 const App = (state) => {
-    
-    if(state.get('selected') != '') {  
 
+    //<rover>${showRoverInformation(state.get('rover'))}</rover>
+    
+    if(state.get('selected') != '') { 
         return `
         <header>${createHeader(state.get('rovers'))}</header>
-        <main>            
+        <main> 
+        <rover id= 'rover'></rover>                  
             <section> 
             ${showImagesByRover(state)}   
             </section>
@@ -75,8 +75,7 @@ const ImageOfTheDay = (apod) => {
     const today = new Date();
     const photodate = new Date(apod.date);
     
-    if (apod ==='' || apod.get('image').get('date') === today.getDate() ) {
-        console.log('false');
+    if (!apod || apod.get('image').get('date') === today.getDate() ) {
         getImageOfTheDay(store);
     }else {
         // check if the photo of the day is actually type video!
@@ -118,7 +117,7 @@ const getImagesByRover = (state) => {
     
     fetch(`http://localhost:3000/${selectedRover}/images`)
         .then(res => res.json())
-        .then(images => updateStore(store, { images, selected: selectedRover }));
+        .then(images => updateStore(store, { images, selected: state.get('selected') }));
 
 };
 
@@ -129,39 +128,40 @@ const showImagesByRover = (state) => {
         
     if(!state.get('images')){
         getImagesByRover(state);
-
-    }else{
         
-            //show images
-            //let src = state.get('images').get('images').get('latest_photos').toJS();
-            //const photoArray = src.map(item => item).slice(0, 8);
-            const photos = state
-                .get('images')
-                .get('images')
-                .get('latest_photos')
-                .slice(0,4);
+
+    }else{                
+        const photos = state
+            .get('images')
+            .get('images')
+            .get('latest_photos')
+            .slice(0,4);
+
+        const rover = state
+            .get('images')
+            .get('images')
+            .get('latest_photos')
+            .get('0')
+            .get('rover');
+
+        if(state.get('rover') === '' || state.get('selected') != state.get('rover').get('name')){
+            updateStore(store, { rover , images : state.get('images'), selected: state.get('selected')});
+        } 
+        
+                         
             
-            (rover = (photos.get('0').get('rover')),() => {
+        let retString = '';
+        photos.forEach(photo => {
+            retString += `
+            <figure>
+            <img src=${photo.get('img_src')} style='width:400px; margin:10px;'>
+            <figcaption>${photo.get('earth_date')}</figcaption>
+            </figure>                
+            `;               
 
-                console.log(rover.get('id'));
-            })();
-            
-
-
-            let retString = '';
-            photos.forEach(photo => {
-                retString += `
-                <figure>
-                <img src=${photo.get('img_src')} style='width:400px; margin:10px;'>
-                <figcaption>${photo.get('earth_date')}</figcaption>
-                </figure>                
-                `;
-                //add date to pics
-
-            });
-            
+        });            
                             
-            return retString;
+        return retString;
             
 
                 
@@ -196,12 +196,25 @@ const addClickListener =() => {
         
     rovers.forEach(element => {
         document.getElementById(element).addEventListener('click', () => {
-            updateStore(store, { selected: element, images: '' })
+            updateStore(store, { selected: element })
         });
 
     });
 
 };
+
+const showRoverInformation = (state) => {
+
+    if(state != ''){
+        console.log(state.get('name'));
+        let t = document.getElementById('rover');
+        t.innerHTML = `
+            Name: ${state.get('name')}
+            Status: ${state.get('status')}
+            `;
+    }
+}
+
 
 
 
