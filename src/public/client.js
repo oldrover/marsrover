@@ -1,37 +1,39 @@
-let store = {
-    user: { name: "Student" },
+const store = Immutable.Map({
     apod: '',
     rovers: ['Curiosity', 'Opportunity', 'Spirit'],
     selected: '',
     images: ''    
-};
+});
 
 // add our markup to the page
 const root = document.getElementById('root');
 
 const updateStore = (store, newState) => {
-    store = Object.assign(store, newState);
+    store = store.merge(newState);
+    console.log(store.toJS());
     render(root, store);
-}
+};
 
-const render = async (root, state) => {
+const render = async (root, state) => {   
     root.innerHTML = App(state);
-    addClickListener(state);
-}
+    console.log(state.get('selected'));
+    addClickListener(state);    
+    
+};
 
 
 // create content
 const App = (state) => {
-    let { rovers, apod, selected, images } = state;
-
-    if(selected !="") {  
+    //let { rovers, apod, selected, images } = state.toJS(); 
+             
+    if(state.get('selected') !="") {  
 
         return `
-        <header>${createHeader(rovers)}</header>
+        <header>${createHeader(state.get('rovers'))}</header>
         <main>
-            <submenu>${createSubMenu(selected)}</submenu>
+            <submenu>${createSubMenu(state.get('selected'))}</submenu>
             <section> 
-            ${showImagesByRover(state)}   
+            ${showImagesByRover(state.toJS())}   
             </section>
         </main>
         <footer>${createFooter()}</footer>
@@ -39,10 +41,10 @@ const App = (state) => {
     }else{
 
         return `
-        <header>${createHeader(rovers)}</header>
+        <header>${createHeader(state.get('rovers'))}</header>
         <main>
             <section>                
-                ${ImageOfTheDay(apod)}
+                ${ImageOfTheDay(state.get('apod'))}
                 
             </section>
         </main>
@@ -55,7 +57,7 @@ const App = (state) => {
 }
 
 // listening for load event because page should load before any JS is called
-window.addEventListener('load', () => {
+window.addEventListener('load', () => {   
     render(root, store);   
 })
 
@@ -66,16 +68,14 @@ const ImageOfTheDay = (apod) => {
 
     // If image does not already exist, or it is not from today -- request it again
     const today = new Date();
-    const photodate = new Date();
-    console.log(photodate.getDate(), today.getDate());
-
-    console.log(photodate.getDate() === today.getDate());
-    if (!apod || apod.image.date === today.getDate() ) {
+    const photodate = new Date(apod.date);
+    
+    if (apod ==='' || apod.get('image').get('date') === today.getDate() ) {
+        console.log('false');
         getImageOfTheDay(store);
-    }
-
-    // check if the photo of the day is actually type video!
-    if (apod.image.media_type === "video") {
+    }else {
+        // check if the photo of the day is actually type video!
+    if (apod.get('image').get('media_type') === "video") {
         return (`
             <h3>Astronomic Video of the day</h3>
             <p>See today's featured video <a href="${apod.url}">here</a></p>
@@ -85,18 +85,20 @@ const ImageOfTheDay = (apod) => {
     } else {
         return (`
             <h3>Astronomic Picture of the day</h3>
-            <img src="${apod.image.url}" height="350px" width="100%" />
-            <p>${apod.image.explanation}</p>
+            <img src="${apod.get('image').get('url')}" height="350px" width="100%" />
+            <p>${apod.get('image').get('explanation')}</p>
         `)
     }
+
+    }
+
+    
 }
 
 // ------------------------------------------------------  API CALLS
 
 // Example API call
-const getImageOfTheDay = (state) => {
-    let { apod } = state;
-
+const getImageOfTheDay = (state) => {    
     fetch(`http://localhost:3000/apod`)
         .then(res => res.json())
         .then(apod => updateStore(store, { apod }));
@@ -110,12 +112,13 @@ const getImagesByRover = (state) => {
     
     fetch(`http://localhost:3000/${selectedRover}/images`)
         .then(res => res.json())
-        .then(images => updateStore(store, { images }));
+        .then(images => updateStore(store, { images, selected: selectedRover }));
 
 };
 
 // show images of selected Rover
 const showImagesByRover = (state) => {
+    console.log('images')
 
     if(!state.images){
         getImagesByRover(state);
@@ -153,10 +156,10 @@ const showImagesByRover = (state) => {
 };
 
 // create Header content
-const createHeader = (rovers) => {
+const createHeader = (state) => {    
     let menu = '<div>';
-    rovers.forEach(element => {
-        menu += `<element id='${element}'>${element}</element>`;
+    state.forEach(element => {
+        menu += `<element id='${element}'>${element}</element>`;        
 
     });
 
@@ -165,14 +168,14 @@ const createHeader = (rovers) => {
 
 // create Footer content
 const createFooter = () => {
-    return "<div>this is the Footer</div>";
+    return "";
 
 };
 
 // add ClickListener to menu items
-const addClickListener =(state) => {
-    let rovers = state.rovers;
-
+const addClickListener =() => {
+    let rovers = store.get('rovers');
+        
     rovers.forEach(element => {
         document.getElementById(element).addEventListener('click', () => {
             updateStore(store, { selected: element, images: '' })
@@ -181,8 +184,7 @@ const addClickListener =(state) => {
     });
 
 };
-const createSubMenu = (state) => {
-        
+const createSubMenu = (state) => {        
     return state;
 
 }
