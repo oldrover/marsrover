@@ -5,28 +5,31 @@ const store = Immutable.Map({
     images: ''    
 });
 
+
 // add our markup to the page
 const root = document.getElementById('root');
 
+
+//update store
 const updateStore = (store, newState) => {
     store = store.merge(newState);
     console.log(store.toJS());
     render(root, store);
 };
 
+
+//reder the page
 const render = async (root, state) => {   
     root.innerHTML = App(state);
     console.log(state.get('selected'));
-    addClickListener(state);    
-    
+    addClickListener(state); 
 };
 
 
 // create content
 const App = (state) => {
-    //let { rovers, apod, selected, images } = state.toJS(); 
-             
-    if(state.get('selected') !="") {  
+    
+    if(state.get('selected') != '') {  
 
         return `
         <header>${createHeader(state.get('rovers'))}</header>
@@ -56,10 +59,12 @@ const App = (state) => {
     
 }
 
+
 // listening for load event because page should load before any JS is called
 window.addEventListener('load', () => {   
     render(root, store);   
 })
+
 
 // ------------------------------------------------------  COMPONENTS
 
@@ -105,6 +110,7 @@ const getImageOfTheDay = (state) => {
 
 };
 
+
 // get Images by selected Rover
 const getImagesByRover = (state) => {
     let selectedRover = state.selected.toLowerCase();
@@ -115,6 +121,7 @@ const getImagesByRover = (state) => {
         .then(images => updateStore(store, { images, selected: selectedRover }));
 
 };
+
 
 // show images of selected Rover
 const showImagesByRover = (state) => {
@@ -155,6 +162,7 @@ const showImagesByRover = (state) => {
 
 };
 
+
 // create Header content
 const createHeader = (state) => {    
     let menu = '<div>';
@@ -166,11 +174,13 @@ const createHeader = (state) => {
     return menu + '</div>';
 };
 
+
 // create Footer content
 const createFooter = () => {
     return "";
 
 };
+
 
 // add ClickListener to menu items
 const addClickListener =() => {
@@ -184,6 +194,8 @@ const addClickListener =() => {
     });
 
 };
+
+
 const createSubMenu = (state) => {        
     return state;
 
