@@ -5,6 +5,9 @@ const store = Immutable.Map({
     images: ''    
 });
 
+//testvar
+let test = {};
+
 
 // add our markup to the page
 const root = document.getElementById('root');
@@ -18,7 +21,7 @@ const updateStore = (store, newState) => {
 };
 
 
-//reder the page
+//render the page
 const render = async (root, state) => {   
     root.innerHTML = App(state);
     console.log(state.get('selected'));
@@ -33,10 +36,9 @@ const App = (state) => {
 
         return `
         <header>${createHeader(state.get('rovers'))}</header>
-        <main>
-            <submenu>${createSubMenu(state.get('selected'))}</submenu>
+        <main>            
             <section> 
-            ${showImagesByRover(state.toJS())}   
+            ${showImagesByRover(state)}   
             </section>
         </main>
         <footer>${createFooter()}</footer>
@@ -55,8 +57,6 @@ const App = (state) => {
     `   
     }
 
-    
-    
 }
 
 
@@ -113,8 +113,8 @@ const getImageOfTheDay = (state) => {
 
 // get Images by selected Rover
 const getImagesByRover = (state) => {
-    let selectedRover = state.selected.toLowerCase();
-    let { images } = state.images;    
+    let selectedRover = state.get('selected').toLowerCase();
+    let { images } = state.get('images');    
     
     fetch(`http://localhost:3000/${selectedRover}/images`)
         .then(res => res.json())
@@ -125,38 +125,46 @@ const getImagesByRover = (state) => {
 
 // show images of selected Rover
 const showImagesByRover = (state) => {
-    console.log('images')
-
-    if(!state.images){
+    
+        
+    if(!state.get('images')){
         getImagesByRover(state);
 
     }else{
-        if(state.images.images.error){
-            return state.images.images.error.code;
-        }
-        else{
+        
             //show images
-            let src = state.images.images.latest_photos;
-            const photoArray = src.map(item => item).slice(0, 8);
+            //let src = state.get('images').get('images').get('latest_photos').toJS();
+            //const photoArray = src.map(item => item).slice(0, 8);
+            const photos = state
+                .get('images')
+                .get('images')
+                .get('latest_photos')
+                .slice(0,4);
             
+            (rover = (photos.get('0').get('rover')),() => {
+
+                console.log(rover.get('id'));
+            })();
+            
+
+
             let retString = '';
-            photoArray.forEach(photo => {
-                retString += `<img src=${photo.img_src} style='width:400px; margin:10px;'></img>`;
+            photos.forEach(photo => {
+                retString += `
+                <figure>
+                <img src=${photo.get('img_src')} style='width:400px; margin:10px;'>
+                <figcaption>${photo.get('earth_date')}</figcaption>
+                </figure>                
+                `;
                 //add date to pics
 
             });
             
-            let information = 
-                `
-                <div> Rover: ${photoArray[0].rover.name}</div>
-                <div> Landing date: ${photoArray[0].rover.landing_date}</div>
-                <div> Launch date: ${photoArray[0].rover.launch_date}</div>
-                <div> Status: ${photoArray[0].rover.status}</div>
-                `
-            return retString + information;
+                            
+            return retString;
             
 
-        }        
+                
     }
 
 
@@ -194,12 +202,6 @@ const addClickListener =() => {
     });
 
 };
-
-
-const createSubMenu = (state) => {        
-    return state;
-
-}
 
 
 
