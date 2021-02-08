@@ -15,25 +15,27 @@ const root = document.getElementById('root');
 //update store
 const updateStore = (store, newState) => {
     store = store.merge(newState);
-    console.log(store.toJS());
+    //console.log(store.toJS());
     render(root, store);
 };
 
 
 //render the page
-const render = async (root, state) => {   
-    root.innerHTML = App(state); 
+const render = async(root, state) => {   
+    root.innerHTML = App(state);
     showRoverInformation(state.get('rover'));   
     addClickListener(); 
-    showDivs(slideIndex);
+    if(state.get('images')!= '') {
+        showDivs(slideIndex);
+    }
+    
+    
+     
 };
-
 
 // create content
 const App = (state) => {
-
-    //<rover>${showRoverInformation(state.get('rover'))}</rover>
-    
+       
     if(state.get('selected') != '') { 
         return `
         <header>${createHeader(state.get('rovers'))}</header>
@@ -50,7 +52,7 @@ const App = (state) => {
         return `
         <header>${createHeader(state.get('rovers'))}</header>
         <main>
-            <section>                
+            <section>               
                 ${ImageOfTheDay(state.get('apod'))}
                 
             </section>
@@ -199,7 +201,7 @@ const createFooter = () => {
 
 
 // add ClickListener to menu items
-const addClickListener =() => {
+const addClickListener = async() => {
     let rovers = store.get('rovers');
         
     rovers.forEach(element => {
@@ -215,7 +217,6 @@ const addClickListener =() => {
 const showRoverInformation = (state) => {
 
     if(state != ''){
-        console.log(state.get('name'));
         let t = document.getElementById('rover');
         t.innerHTML = `
             <h1>&#128712;</h1>
@@ -230,9 +231,8 @@ const showRoverInformation = (state) => {
         t.style.display = "block";
     }
 }
+
 //slideshow test
-
-
 function plusDivs(n) {
   showDivs(slideIndex += n);
 }
@@ -245,7 +245,7 @@ function showDivs(n) {
   for (i = 0; i < x.length; i++) {
     x[i].style.display = "none";  
   }
-  x[slideIndex-1].style.display = "block";  
+  x[slideIndex-1].style.display = "block";
 }
 
 
