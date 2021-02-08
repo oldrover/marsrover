@@ -43,9 +43,7 @@ const App = (state) => {
             <section> 
             ${showImagesByRover(state)}   
             </section>
-        </main>
-        <footer>${createFooter()}</footer>        
-         
+        </main>                   
     `
     }else{
 
@@ -56,8 +54,7 @@ const App = (state) => {
                 ${ImageOfTheDay(state.get('apod'))}
                 
             </section>
-        </main>
-        <footer>${createFooter()}</footer>
+        </main>        
     `   
     }
 
@@ -183,22 +180,14 @@ const showImagesByRover = (state) => {
 
 // create Header content
 const createHeader = (state) => {    
-    let menu = '<div>';
+    let menu = '<div><element id="home"><a href= "./index.html">APOD</a></element>';
     state.forEach(element => {
-        menu += `<element id='${element}'>${element}</element>`;        
+        menu += `<element id="${element}">${element}</element>`;        
 
     });
 
     return menu + '</div>';
 };
-
-
-// create Footer content
-const createFooter = () => {
-    return "";
-
-};
-
 
 // add ClickListener to menu items
 const addClickListener = async() => {
