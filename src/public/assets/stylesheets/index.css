@@ -29,7 +29,13 @@ header element {
   font-weight: bold;
   color: white; 
   cursor: pointer; 
+  
 }
+header element a{
+  text-decoration: none;
+  color: white;
+
+   }
 
 main {
   flex-grow: 1;  
@@ -129,13 +135,6 @@ main p{
 #apod{
   max-width: 40%;
   min-width: 200px; 
-
-
-}
-
-footer {
-  
-    /* footer styles */
 }
 
 /* -------------------  TABLET  --------------------- */
