@@ -6,6 +6,8 @@ const store = Immutable.Map({
     rover: ''   
 });
 
+var slideIndex = 1;
+
 // add our markup to the page
 const root = document.getElementById('root');
 
@@ -13,7 +15,7 @@ const root = document.getElementById('root');
 //update store
 const updateStore = (store, newState) => {
     store = store.merge(newState);
-    //console.log(store.toJS());
+    console.log(store.toJS());
     render(root, store);
 };
 
@@ -23,7 +25,7 @@ const render = async (root, state) => {
     root.innerHTML = App(state); 
     showRoverInformation(state.get('rover'));   
     addClickListener(); 
-
+    showDivs(slideIndex);
 };
 
 
@@ -35,13 +37,13 @@ const App = (state) => {
     if(state.get('selected') != '') { 
         return `
         <header>${createHeader(state.get('rovers'))}</header>
-        <main> 
-        <rover id= 'rover'></rover>                  
+        <main>                         
             <section> 
             ${showImagesByRover(state)}   
             </section>
         </main>
-        <footer>${createFooter()}</footer>
+        <footer>${createFooter()}</footer>        
+         
     `
     }else{
 
@@ -89,7 +91,7 @@ const ImageOfTheDay = (apod) => {
     } else {
         return (`
             <h3>Astronomic Picture of the day</h3>
-            <img src="${apod.get('image').get('url')}" height="350px" width="100%" />
+            <img id="apod" src="${apod.get('image').get('url')}" />
             <p>${apod.get('image').get('explanation')}</p>
         `)
     }
@@ -147,19 +149,25 @@ const showImagesByRover = (state) => {
         if(state.get('rover') === '' || state.get('selected') != state.get('rover').get('name')){
             updateStore(store, { rover , images : state.get('images'), selected: state.get('selected')});
         } 
-        
-                         
+                                 
             
-        let retString = '';
+        let retString = '<div id="slideshow">';
         photos.forEach(photo => {
             retString += `
-            <figure>
-            <img src=${photo.get('img_src')} style='width:400px; margin:10px;'>
-            <figcaption>${photo.get('earth_date')}</figcaption>
-            </figure>                
-            `;               
+            
+            <img class= "slides" src=${photo.get('img_src')}>
+            <div class= "caption">${photo.get('earth_date')}</div>            
+                            
+            `;  
+            
+            
 
-        });            
+        });  
+        retString +=`
+        <button id="buttonleft" onclick="plusDivs(-1)">&#10094;</button>
+        <button id="buttonright" onclick="plusDivs(1)">&#10095;</button>
+        </div>`;   
+                    
                             
         return retString;
             
@@ -203,16 +211,41 @@ const addClickListener =() => {
 
 };
 
+
 const showRoverInformation = (state) => {
 
     if(state != ''){
         console.log(state.get('name'));
         let t = document.getElementById('rover');
         t.innerHTML = `
-            Name: ${state.get('name')}
-            Status: ${state.get('status')}
+            <h1>&#128712;</h1>
+            <ul>
+            <li>Name:  ${state.get('name')}</li>
+            <li>Status: ${state.get('status')}</li>
+            <li>Start date: ${state.get('start_date')}</li>
+            <li>Landing date: ${state.get('landing_date')}</li>
+            </ul>
+            
             `;
+        t.style.display = "block";
     }
+}
+//slideshow test
+
+
+function plusDivs(n) {
+  showDivs(slideIndex += n);
+}
+
+function showDivs(n) {
+  var i;
+  var x = document.getElementsByClassName("slides");
+  if (n > x.length) {slideIndex = 1}
+  if (n < 1) {slideIndex = x.length}
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";  
+  }
+  x[slideIndex-1].style.display = "block";  
 }
 
 
