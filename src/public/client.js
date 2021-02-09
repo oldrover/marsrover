@@ -55,12 +55,12 @@ const App = (state) => {
     `   
     }
 
-}
+};
 
 // listening for load event because page should load before any JS is called
 window.addEventListener('load', () => {   
     render(root, store);   
-})
+});
 
 // ------------------------------------------------------  COMPONENTS
 
@@ -75,29 +75,29 @@ const ImageOfTheDay = (apod) => {
         getImageOfTheDay(store);
     }else {
         // check if the photo of the day is actually type video!
-    if (apod.get('image').get('media_type') === "video") {
-        return (`
-            <div>
-            <h3>Astronomic Video of the day</h3>
-            <p>See today's featured video <a href="${apod.get('image').get('url')}">here</a></p>
-            <p>${apod.get('image').get('title')}</p>
-            <p>${apod.get('image').get('explanation')}</p>
-            </div>
-        `)
-    } else {
-        return (`
-            <div>
-            <h3>Astronomic Picture of the day</h3>
-            <img id="apod" src="${apod.get('image').get('url')}" />
-            <p>${apod.get('image').get('explanation')}</p>
-            </div>
-        `)
-    }
+        if (apod.get('image').get('media_type') === "video") {
+            return (`
+                <div>
+                <h3>Astronomic Video of the day</h3>
+                <p>See today's featured video <a href="${apod.get('image').get('url')}">here</a></p>
+                <p>${apod.get('image').get('title')}</p>
+                <p>${apod.get('image').get('explanation')}</p>
+                </div>
+            `);
+        } else {
+            return (`
+                <div>
+                <h3>Astronomic Picture of the day</h3>
+                <img id="apod" src="${apod.get('image').get('url')}" />
+                <p>${apod.get('image').get('explanation')}</p>
+                </div>
+            `);
+        };
 
-    }
+    };
 
     
-}
+};
 
 // show images of selected Rover
 const showImagesByRover = (state) => {
@@ -121,7 +121,7 @@ const showImagesByRover = (state) => {
 
         if(state.get('rover') === '' || state.get('selected') != state.get('rover').get('name')){
             updateStore(store, { rover , images : state.get('images'), selected: state.get('selected')});
-        } 
+        };
             
         let retString = '<div id="slideshow">';
         
@@ -140,7 +140,7 @@ const showImagesByRover = (state) => {
         </div>`;   
 
         return retString;                
-    }
+    };
 };
 
 
@@ -154,10 +154,10 @@ const createHeader = (state) => {
 };
 
 // create the header buttons
-function createRoverButton(element){
+const createRoverButton = (element) => {
     return `<element id="${element}">${element}</element>`;
 
-}
+};
 
 // add ClickListener to menu items
 const addClickListener = async() => {
@@ -190,8 +190,8 @@ const showRoverInformation = (state) => {
             
             `;
         roverInfo.style.display = "block";       
-    }
-}
+    };
+};
 
 //slideshow arrows plus
 const plusDivs = (n) => {
@@ -199,21 +199,23 @@ const plusDivs = (n) => {
   const number = document.getElementById('number');
   const slides = document.getElementsByClassName('slides');
   number.innerHTML = `${slideIndex}/${slides.length}`;
-}
+};
 
 //slideshow function
 const showDivs = (n) => {
   let i;
   const slides = document.getElementsByClassName('slides');
   const number = document.getElementById('number');
+  
   if (n > slides.length) {slideIndex = 1}
-  if (n < 1) {slideIndex = slides.length}    
+  if (n < 1) {slideIndex = slides.length} 
+
   for (i = 0; i < slides.length; i++) {
     slides[i].style.display = 'none';  
   }  
   slides[slideIndex-1].style.display = 'block';
   number.innerHTML = `1 /${slides.length}`;
-}
+};
 
 // ------------------------------------------------------  API CALLS
 
