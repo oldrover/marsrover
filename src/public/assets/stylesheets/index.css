@@ -3,7 +3,7 @@
 body {
   display: flex;
   flex-direction: column;
-  font-family: Arial;
+  font-family: 'Orbitron', sans-serif;
   min-height: 100vh;
   background-image: url("../images/curiosity.jpg");
   background-attachment: fixed;
@@ -27,8 +27,10 @@ header element {
   padding-left: 10px;
   padding-right: 10px;
   font-weight: bold;
+  font-size:large;
   color: white; 
-  cursor: pointer; 
+  cursor: pointer;
+  text-shadow: 0px 0px 6px #000; /*S*/ 
   
 }
 header element a{
@@ -53,7 +55,6 @@ section {
 }
 
 main p{
-  font-weight: bold;
   color: #ffffff;
 }
 
@@ -63,34 +64,40 @@ main p{
   display: flex;
   position: absolute;
   overflow: hidden;
-  left: 50px;
-  top: 90px;
-  width: 35px;
-  height: 40px;  
-  background: rgba(255,255,255,0.5);
-  color: white;
-  border-radius: 2% 2% 50% 2%;
+  left: 40px;
+  top: 80px;
+  width: 30px;
+  height: 35px;  
+  background: rgba(255,255,255);
+  color: #795e50;
+  border-radius: 0px 0px 10px 0px;
   -webkit-transition: all 0.35s ease-in-out;
   -moz-transition: all 0.35s ease-in-out;
   -o-transition: all 0.35s ease-in-out;
   z-index: 1;
+  white-space: nowrap;
+  padding-left:5px;/*S*/
+ 
 
 }
 
-#rover h1{
+#rover h2{
   margin: 0px;
   top:0px;
   left: 0px;
+  font-weight: normal;
 
 }
-#rover:hover{
-  height: 200px;
-  width: 200px;
-  border-radius: 0% 2% 20% 2%;
+#rover:hover{  
+  height: 150px;
+  width: 260px;
+  border-radius: 0px 0px 15px 0px;
+  white-space: nowrap;
 
 } 
 
 #slideshow{
+ 
   position: relative;
   justify-content: center;
   display: flex;
@@ -100,7 +107,7 @@ main p{
 .slides {  
   display: none;
   max-width: 40%;
-  min-width: 200px;  
+    
   left: 25%;
   top: 25%; 
   flex:1; 
@@ -134,8 +141,9 @@ main p{
 }
 #apod{
   max-width: 40%;
-  min-width: 200px; 
+  min-width: 200px;   
 }
+
 
 /* -------------------  TABLET  --------------------- */
 @media (min-width: 768px) {
