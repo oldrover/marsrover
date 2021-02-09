@@ -14,7 +14,6 @@ const root = document.getElementById('root');
 //update store
 const updateStore = (store, newState) => {
     store = store.merge(newState);
-    console.log(store.toJS());
     render(root, store);
 };
 
@@ -102,19 +101,16 @@ const ImageOfTheDay = (apod) => {
 
 // show images of selected Rover
 const showImagesByRover = (state) => {
-    
-        
+            
     if(!state.get('images')){
-        getImagesByRover(state);
-        
+        getImagesByRover(state);       
 
     }else{                
         const photos = state
             .get('images')
             .get('images')
             .get('latest_photos')
-            .slice(0,10);
-        
+            .slice(0,10);        
        
         const rover = state
             .get('images')
@@ -128,27 +124,25 @@ const showImagesByRover = (state) => {
         } 
             
         let retString = '<div id="slideshow">';
-        photos.forEach(photo => {
-            retString += `
-            
-            <img class= "slides" src=${photo.get('img_src')}>
-            <div class= "caption">${photo.get('earth_date')}</div>                       
-                            
-            `;  
         
-        });  
+        retString += photos.map(photo => {
+            return `
+            <img class= "slides" src=${photo.get('img_src')}>
+            <div class= "caption">${photo.get('earth_date')}</div> 
+            `
+
+        }).join('');
+        
         retString +=`
         <button id="buttonleft" onclick="plusDivs(-1)">&#10094;</button>
         <button id="buttonright" onclick="plusDivs(1)">&#10095;</button>
         <div id="number">1</div> 
         </div>`;   
-                            
-        return retString;
-                
+
+        return retString;                
     }
-
-
 };
+
 
 // create Header content
 const createHeader = (state) => {    
@@ -190,12 +184,12 @@ const showRoverInformation = (state) => {
             <li>ID: ${state.get('id')}</li>
             <li>Status: ${state.get('status')}</li>
             <li>Launch: ${state.get('launch_date')}</li>
-            <li>Landing: ${state.get('landing_date')}</li>
+            <li>Landing: ${state.get('landing_date')}</li>          
             </ul>
             </div>
             
             `;
-        roverInfo.style.display = "block";
+        roverInfo.style.display = "block";       
     }
 }
 
@@ -213,13 +207,12 @@ const showDivs = (n) => {
   const slides = document.getElementsByClassName('slides');
   const number = document.getElementById('number');
   if (n > slides.length) {slideIndex = 1}
-  if (n < 1) {slideIndex = slides.length}
+  if (n < 1) {slideIndex = slides.length}    
   for (i = 0; i < slides.length; i++) {
     slides[i].style.display = 'none';  
-  }
+  }  
   slides[slideIndex-1].style.display = 'block';
   number.innerHTML = `1 /${slides.length}`;
-
 }
 
 // ------------------------------------------------------  API CALLS
