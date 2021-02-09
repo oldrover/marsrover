@@ -6,19 +6,17 @@ const store = Immutable.Map({
     rover: ''   
 });
 
-var slideIndex = 1;
+let slideIndex = 1;
 
 // add our markup to the page
 const root = document.getElementById('root');
 
-
 //update store
 const updateStore = (store, newState) => {
     store = store.merge(newState);
-    //console.log(store.toJS());
+    console.log(store.toJS());
     render(root, store);
 };
-
 
 //render the page
 const render = async(root, state) => {   
@@ -33,7 +31,7 @@ const render = async(root, state) => {
      
 };
 
-// create content
+// create App content
 const App = (state) => {
        
     if(state.get('selected') != '') { 
@@ -60,12 +58,10 @@ const App = (state) => {
 
 }
 
-
 // listening for load event because page should load before any JS is called
 window.addEventListener('load', () => {   
     render(root, store);   
 })
-
 
 // ------------------------------------------------------  COMPONENTS
 
@@ -82,16 +78,20 @@ const ImageOfTheDay = (apod) => {
         // check if the photo of the day is actually type video!
     if (apod.get('image').get('media_type') === "video") {
         return (`
+            <div>
             <h3>Astronomic Video of the day</h3>
-            <p>See today's featured video <a href="${apod.url}">here</a></p>
-            <p>${apod.image.title}</p>
-            <p>${apod.image.explanation}</p>
+            <p>See today's featured video <a href="${apod.get('image').get('url')}">here</a></p>
+            <p>${apod.get('image').get('title')}</p>
+            <p>${apod.get('image').get('explanation')}</p>
+            </div>
         `)
     } else {
         return (`
+            <div>
             <h3>Astronomic Picture of the day</h3>
             <img id="apod" src="${apod.get('image').get('url')}" />
             <p>${apod.get('image').get('explanation')}</p>
+            </div>
         `)
     }
 
@@ -99,29 +99,6 @@ const ImageOfTheDay = (apod) => {
 
     
 }
-
-// ------------------------------------------------------  API CALLS
-
-// Example API call
-const getImageOfTheDay = (state) => {    
-    fetch(`http://localhost:3000/apod`)
-        .then(res => res.json())
-        .then(apod => updateStore(store, { apod }));
-
-};
-
-
-// get Images by selected Rover
-const getImagesByRover = (state) => {
-    let selectedRover = state.get('selected').toLowerCase();
-    let { images } = state.get('images');    
-    
-    fetch(`http://localhost:3000/${selectedRover}/images`)
-        .then(res => res.json())
-        .then(images => updateStore(store, { images, selected: state.get('selected') }));
-
-};
-
 
 // show images of selected Rover
 const showImagesByRover = (state) => {
@@ -136,8 +113,9 @@ const showImagesByRover = (state) => {
             .get('images')
             .get('images')
             .get('latest_photos')
-            .slice(0,4);
-
+            .slice(0,10);
+        
+       
         const rover = state
             .get('images')
             .get('images')
@@ -148,46 +126,44 @@ const showImagesByRover = (state) => {
         if(state.get('rover') === '' || state.get('selected') != state.get('rover').get('name')){
             updateStore(store, { rover , images : state.get('images'), selected: state.get('selected')});
         } 
-                                 
             
         let retString = '<div id="slideshow">';
         photos.forEach(photo => {
             retString += `
             
             <img class= "slides" src=${photo.get('img_src')}>
-            <div class= "caption">${photo.get('earth_date')}</div>            
+            <div class= "caption">${photo.get('earth_date')}</div>                       
                             
             `;  
-            
-            
-
+        
         });  
         retString +=`
         <button id="buttonleft" onclick="plusDivs(-1)">&#10094;</button>
         <button id="buttonright" onclick="plusDivs(1)">&#10095;</button>
+        <div id="number">1</div> 
         </div>`;   
-                    
                             
         return retString;
-            
-
                 
     }
 
 
 };
 
-
 // create Header content
 const createHeader = (state) => {    
     let menu = '<div><element id="home"><a href= "./index.html">APOD</a></element>';
-    state.forEach(element => {
-        menu += `<element id="${element}">${element}</element>`;        
-
-    });
+    
+    menu += state.map(element => createRoverButton(element)).join('');
 
     return menu + '</div>';
 };
+
+// create the header buttons
+function createRoverButton(element){
+    return `<element id="${element}">${element}</element>`;
+
+}
 
 // add ClickListener to menu items
 const addClickListener = async() => {
@@ -202,40 +178,72 @@ const addClickListener = async() => {
 
 };
 
-
+// fill Infobar with rover info and show ir
 const showRoverInformation = (state) => {
 
     if(state != ''){
-        let t = document.getElementById('rover');
-        t.innerHTML = `
-            <h1>&#128712;</h1>
+        let roverInfo = document.getElementById('rover');
+        roverInfo.innerHTML = `
+            <div style: width: 150px;>
+            <h2>&#128712;  ${state.get('name')}</h2>
             <ul>
-            <li>Name:  ${state.get('name')}</li>
+            <li>ID: ${state.get('id')}</li>
             <li>Status: ${state.get('status')}</li>
-            <li>Start date: ${state.get('start_date')}</li>
-            <li>Landing date: ${state.get('landing_date')}</li>
+            <li>Launch: ${state.get('launch_date')}</li>
+            <li>Landing: ${state.get('landing_date')}</li>
             </ul>
+            </div>
             
             `;
-        t.style.display = "block";
+        roverInfo.style.display = "block";
     }
 }
 
-//slideshow test
-function plusDivs(n) {
+//slideshow arrows plus
+const plusDivs = (n) => {
   showDivs(slideIndex += n);
+  const number = document.getElementById('number');
+  const slides = document.getElementsByClassName('slides');
+  number.innerHTML = `${slideIndex}/${slides.length}`;
 }
 
-function showDivs(n) {
-  var i;
-  var x = document.getElementsByClassName("slides");
-  if (n > x.length) {slideIndex = 1}
-  if (n < 1) {slideIndex = x.length}
-  for (i = 0; i < x.length; i++) {
-    x[i].style.display = "none";  
+//slideshow function
+const showDivs = (n) => {
+  let i;
+  const slides = document.getElementsByClassName('slides');
+  const number = document.getElementById('number');
+  if (n > slides.length) {slideIndex = 1}
+  if (n < 1) {slideIndex = slides.length}
+  for (i = 0; i < slides.length; i++) {
+    slides[i].style.display = 'none';  
   }
-  x[slideIndex-1].style.display = "block";
+  slides[slideIndex-1].style.display = 'block';
+  number.innerHTML = `1 /${slides.length}`;
+
 }
+
+// ------------------------------------------------------  API CALLS
+
+// API call for image of the day
+const getImageOfTheDay = (state) => {    
+    fetch(`http://localhost:3000/apod`)
+        .then(res => res.json())
+        .then(apod => updateStore(store, { apod }));
+
+};
+
+// API call for recent imagesw by rover
+const getImagesByRover = (state) => {
+    let selectedRover = state.get('selected').toLowerCase();
+    let { images } = state.get('images');    
+    
+    fetch(`http://localhost:3000/${selectedRover}/images`)
+        .then(res => res.json())
+        .then(images => updateStore(store, { images, selected: state.get('selected') }));
+
+};
+
+
 
 
 
